@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             targetNamespace="http://flowable.org/vacation">
+
+    <process id="vacationLeaveProcess" name="Vacation Leave Process" isExecutable="true">
+
+        <startEvent id="startEvent" name="Start" />
+
+        <serviceTask id="validateRequestTask" name="Validate Leave Request"
+                     flowable:class="com.example.leave.delegate.ValidateLeaveRequestDelegate" />
+
+        <userTask id="managerApprovalTask" name="Manager Approval" />
+
+        <exclusiveGateway id="approvalGateway" name="Approved?" />
+
+        <endEvent id="approvedEnd" name="Approved" />
+        <endEvent id="rejectedEnd" name="Rejected" />
+
+        <!-- Sequence Flows -->
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="validateRequestTask" />
+        <sequenceFlow id="flow2" sourceRef="validateRequestTask" targetRef="managerApprovalTask" />
+        <sequenceFlow id="flow3" sourceRef="managerApprovalTask" targetRef="approvalGateway" />
+        <sequenceFlow id="flow4" sourceRef="approvalGateway" targetRef="approvedEnd">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == true}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow5" sourceRef="approvalGateway" targetRef="rejectedEnd">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved == false}]]></conditionExpression>
+        </sequenceFlow>
+
+    </process>
+</definitions>

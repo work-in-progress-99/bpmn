@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             targetNamespace="VacationLeaveProcess">
+
+  <process id="vacationLeaveProcess" name="Vacation Leave Process" isExecutable="true">
+    <startEvent id="startEvent" name="Start" />
+    <userTask id="submitRequest" name="Submit Leave Request" />
+    <exclusiveGateway id="approvedGateway" name="Manager Decision" />
+    <userTask id="approveTask" name="Manager Approves?" />
+    <endEvent id="approvedEnd" name="Leave Approved" />
+    <endEvent id="rejectedEnd" name="Leave Rejected" />
+
+    <!-- Flow -->
+    <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="submitRequest" />
+    <sequenceFlow id="flow2" sourceRef="submitRequest" targetRef="approveTask" />
+    <sequenceFlow id="flow3" sourceRef="approveTask" targetRef="approvedGateway" />
+    <sequenceFlow id="flow4" sourceRef="approvedGateway" targetRef="approvedEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved} == true]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="approvedGateway" targetRef="rejectedEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${approved} == false]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+</definitions>
